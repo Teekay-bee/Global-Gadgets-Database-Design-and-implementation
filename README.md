@@ -163,6 +163,7 @@ This ensures that no order exists without its details and that stock quantities 
 
 ---
 ### Data integrity in this Database System 
+
 **Data integrity** safeguards the **accuracy** and **consistency** of information throughout its lifecycle.  
 In the implemented e-commerce database system, several types of integrity were enforced:
 
@@ -336,8 +337,7 @@ Secondary backups stored **offsite** or on the **cloud** (e.g., Microsoft Azure)
 **Backup testing** is essential since untested backups may be **corrupted** or **incomplete** during actual recovery attempts  
 *(Date, 2004)*.
 
---- 
-#### Importance to the Project
+**Importance to the Project**
 
 - **Security:** Protects sensitive customer data, ensuring **privacy** and **regulatory compliance**.  
 - **Backup:** Safeguards against **permanent data loss**, especially for critical tables such as *Orders*, *Payments*, and *Refunds*.  
@@ -387,4 +387,9 @@ Finally, the system was tested with **sample records across all tables**, confir
 
 --- 
 ## About me 
+- I transform complex data into clear, actionable insights.
+Using analytics, machine learning, and visualization, I help you understand trends, improve efficiency, and plan for the future.
+
+Connect with me @https://www.linkedin.com/in/adetokunbo-olasupo-70aa042a1
+
 
