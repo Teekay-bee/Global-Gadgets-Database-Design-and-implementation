@@ -85,19 +85,19 @@ The main entities include:
 
 To ensure efficient database design, **normalization rules** were applied up to the **Third Normal Form (3NF)**.
 
-- First Normal Form (1NF)
+- **First Normal Form (1NF)**
 All attributes are **atomic** (no repeating groups).  
 **Example:** Instead of storing a full name in one column, it was separated into `first_name` and `last_name` in the **Customers** table.
 
-- Second Normal Form (2NF)
+- **Second Normal Form (2NF)**
 Eliminated **partial dependencies** by separating attributes that depend only on part of a composite key.  
 **Example:** Customer addresses were moved to a separate **CustomerAddress** table so that multiple addresses can be stored for one customer.
 
-- Third Normal Form (3NF)
+- **Third Normal Form (3NF)**
 Removed **transitive dependencies** (non-key attributes depending on other non-key attributes).  
 **Example:** Product categories were separated into the **ProductCategory** table instead of storing category names in the **Products** table.
 
-### Illustration
+**Illustration**
 
 - **Unnormalized Table:**
 Products( product_Id,name, category_name, category_description,Price)
@@ -231,25 +231,117 @@ Together, these functions ensure that the database is not only **structurally so
 --- 
 ### Constraints 
 
+In database systems, a **constraint** is a rule enforced on data in a table to maintain **accuracy**, **reliability**, and **integrity**  
+*(Elmasri & Navathe, 2016)*.  
+Constraints ensure that only **valid data**, consistent with **business rules**, can be stored in the database.  
+Examples include **primary keys**, **foreign keys**, **unique constraints**, **check constraints**, and **default values**.
+
+ #### Constraints Report
+
+- **Product Table**
+- Added a **CHECK** constraint to ensure that the product price is always greater than zero (`price > 0`).  
+- Added a **CHECK** constraint to prevent negative stock values (`stock_quantity >= 0`).
+
+- **Customer Table**
+- Added a **PRIMARY KEY** constraint on `customer_id` to uniquely identify each customer.  
+- Added a **UNIQUE** constraint on `email` to avoid duplicate registrations.
+
+- **Orders Table**
+- Added a **PRIMARY KEY** constraint on `order_id`.  
+- Added a **FOREIGN KEY** constraint linking `customer_id` to the **Customers** table, ensuring orders belong to valid customers.  
+- Added **DEFAULT** constraints on `order_date` (`GETDATE()`) and `status` (`Pending`) to auto-fill values.
+
+- **OrderDetails Table**
+- Added a **PRIMARY KEY** constraint on `order_detail_id`.  
+- Added **FOREIGN KEY** constraints on `order_id` (to **Orders**) and `product_id` (to **Products**) to maintain referential integrity.
+
+- **Review Table**
+- Added a **CHECK** constraint to ensure that the rating value is between **1 and 5**.
 
 ---
 ### Triggers 
 
+- **Trg_Order_Cancelled**
+- Fires when an order status is updated to **‘Cancelled’**.  
+- **Increases** back the stock level in **Products** for the cancelled order items.  
+- Maintains **inventory consistency** automatically.
+
+- **Trg_Order_Delivered**
+- Fires when the **Shipment** status is updated to **‘Delivered’**.  
+- Automatically **updates** the corresponding order status in **Orders** to **‘Delivered’**.  
+- Ensures **data consistency** between shipments and orders.
+
+- **Trg_Check_Review_Rating**
+- Fires **after insert or update** on the **Review** table.  
+- **Validates** that the rating value is between **1 and 5**.  
+- **Rolls back** the transaction if invalid data is detected, maintaining data validity.
 --- 
 ## Data Security Maintenance and Recovery 
+
+The long-term success of any database system depends not only on its **design and implementation** but also on its ability to ensure **data security**, **backup**, and **recovery**.  
+A well-designed system must protect **sensitive information** from unauthorized access, maintain **availability** through reliable backup strategies, and guarantee **data recovery** after failures.  
+This chapter discusses the **security and maintenance strategies** adopted for the **E-Commerce Database Project**.
 
 --- 
 ### Data Security 
 
+**Data security** refers to the processes and technologies used to **protect database information** against **unauthorized access**, **corruption**, or **theft**.  
+In this project, several security measures were considered to ensure data confidentiality, integrity, and availability.
+
+**Security Measures Implemented**
+
+- **User Authentication and Authorization**  
+Access to the database is restricted based on **user roles** (e.g., administrator, employee, customer), ensuring the **principle of least privilege** — users can only perform actions necessary for their role  
+*(Elmasri & Navathe, 2016)*.
+
+- **Constraints and Business Rules**  
+Constraints such as **UNIQUE**, **CHECK**, and **FOREIGN KEY** enforce data integrity by **preventing invalid entries** and **unauthorized schema-level modifications**  
+*(Connolly & Begg, 2015)*.
+
+- **Triggers for Auditing** 
+**Triggers** are implemented to log critical operations, such as **order cancellations** and **refund processing**, thereby enhancing **accountability** and enabling **security auditing**  
+*(Date, 2004)*.
+
+- **Encryption** 
+**SQL Server** supports both **column-level encryption** and **Transparent Data Encryption (TDE)** to protect sensitive information such as **email addresses** and **payment details**  
+*(Microsoft Docs, 2023a)*.
 ---
 ### Data Backup 
+**Data backups** are critical for ensuring **data availability** and maintaining **business continuity** in case of system failures or data loss.  
+For this project, the following **backup strategies** were considered:
 
+- **Full Backup**  
+Creates a **complete copy** of the entire database at scheduled intervals, ensuring that **all data** is captured and restorable.
+
+- **Differential Backup**  
+Saves only the **changes made since the last full backup**, reducing both **storage requirements** and **execution time** while maintaining recovery efficiency.
+
+- **Transaction Log Backup**   
+Captures all **database changes** since the last backup, enabling **point-in-time recovery** and minimizing potential data loss during system restoration.
 --- 
 ### Data Recovery 
+
+**Data recovery** ensures that, in the event of **system crashes**, **accidental deletions**, or **cyber-attacks**, the database can be **restored to a consistent state**.  
+The following recovery strategies were implemented and considered in this project:
+
+- **Point-in-Time Recovery**  
+Using **transaction log backups**, the system can be restored to the precise moment before failure, minimizing data loss and ensuring continuity  
+*(Connolly & Begg, 2015)*.
+
+- **Disaster Recovery Plan (DRP)**  
+Secondary backups stored **offsite** or on the **cloud** (e.g., Microsoft Azure) provide resilience against catastrophic failures and ensure **business continuity**  
+*(Elmasri & Navathe, 2016)*.
+
+- **Regular Testing of Backups**  
+**Backup testing** is essential since untested backups may be **corrupted** or **incomplete** during actual recovery attempts  
+*(Date, 2004)*.
 
 --- 
 #### Importance to the Project
 
+- **Security:** Protects sensitive customer data, ensuring **privacy** and **regulatory compliance**.  
+- **Backup:** Safeguards against **permanent data loss**, especially for critical tables such as *Orders*, *Payments*, and *Refunds*.  
+- **Recovery:** Guarantees **business continuity** by enabling restoration of operations after unexpected failures.
 ---
 ## Conclusion 
 
