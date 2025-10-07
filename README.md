@@ -85,15 +85,15 @@ The main entities include:
 
 To ensure efficient database design, **normalization rules** were applied up to the **Third Normal Form (3NF)**.
 
-## First Normal Form (1NF)
+- First Normal Form (1NF)
 All attributes are **atomic** (no repeating groups).  
 **Example:** Instead of storing a full name in one column, it was separated into `first_name` and `last_name` in the **Customers** table.
 
-## Second Normal Form (2NF)
+- Second Normal Form (2NF)
 Eliminated **partial dependencies** by separating attributes that depend only on part of a composite key.  
 **Example:** Customer addresses were moved to a separate **CustomerAddress** table so that multiple addresses can be stored for one customer.
 
-## Third Normal Form (3NF)
+- Third Normal Form (3NF)
 Removed **transitive dependencies** (non-key attributes depending on other non-key attributes).  
 **Example:** Product categories were separated into the **ProductCategory** table instead of storing category names in the **Products** table.
 
@@ -166,19 +166,19 @@ This ensures that no order exists without its details and that stock quantities 
 **Data integrity** safeguards the **accuracy** and **consistency** of information throughout its lifecycle.  
 In the implemented e-commerce database system, several types of integrity were enforced:
 
-## 1. Entity Integrity  
+ 1. **Entity Integrity**  
 Each table was assigned a **Primary Key (PK)** to ensure records are **unique and identifiable**.  
 *Example:* `customer_id` uniquely identifies a customer in the **Customers** table.
 
-## 2. Referential Integrity  
+ 2. **Referential Integrity**  
 Maintained through **Foreign Keys (FK)** to ensure relationships between tables remain valid.  
 *Example:* Each `order_id` in **OrderDetails** must exist in the **Orders** table.
 
-## 3. Domain Integrity  
+ 3. **Domain Integrity**  
 Guaranteed through **CHECK constraints**, **data types**, and **default values**.  
 *Example:* Product prices must be **positive**, and stock levels **cannot be negative**.
 
-## 4. Business Rule Integrity  
+ 4. **Business Rule Integrity**  
 Implemented using **triggers** and **stored procedures** to enforce custom business logic.  
 Examples include:  
 - A **trigger** ensures that when an order is marked as *Cancelled*, the stock is automatically **replenished** in the inventory.  
@@ -190,14 +190,47 @@ Such mechanisms prevent **invalid or inconsistent data** from entering the datab
 ---
 ### Transactions Management 
 
+**Transactions** were implemented in **T-SQL** to maintain **atomic operations** within the e-commerce database system.  
+A transaction ensures that a group of related operations either **all succeed** or **none are applied**, preserving **data consistency**.
+
+For example, when a **customer places an order**, the system performs the following steps as part of a single transaction:
+
+1. **Insert** a new record into the **Orders** table.  
+2. **Insert** related records into the **OrderDetails** table.  
+3. **Decrement** the corresponding product quantities from the **Inventory** table.  
+4. **Record** payment details in the **Payments** table.
+
+If any of these operations **fail**, the entire **transaction is rolled back**, preventing **half-finished or inconsistent operations**.
+
+This approach ensures that all dependent actions — such as order creation, stock update, and payment recording — occur **safely and reliably**, maintaining the **integrity of business processes**.
+
 ---
 ### Concurrency Control in the Project 
 
----
+The system uses **pessimistic concurrency control** for sensitive operations such as stock updates.  
+For example, when two customers attempt to order the **last unit of a product**, **SQL Server locks** the inventory record so that only one transaction can complete, thereby **preventing overselling**.
+
+**Isolation levels** can be adjusted depending on the operation requirements:
+
+- **For order placement:** `SERIALIZABLE` ensures that no **phantom sales** occur.  
+- **For reporting queries:** `READ COMMITTED` prevents **dirty reads** while still allowing concurrency.-
+
 ## Functional Implementation 
+
+Functional implementation in this project refers to the process of ensuring that the **designed database performs the intended operations effectively**.  
+This includes:
+
+- **Creation of tables** with appropriate constraints to maintain **data integrity**.  
+- Use of **stored procedures** to handle repetitive tasks and **enforce business rules**.  
+- Implementation of **triggers** to automate updates — such as adjusting inventory levels or changing order status.  
+- Development of **views** to simplify data retrieval for end users.
+
+Together, these functions ensure that the database is not only **structurally sound** but also **practically usable** in real-world e-commerce operations  
+*(Elmasri & Navathe, 2016)*.
 
 --- 
 ### Constraints 
+
 
 ---
 ### Triggers 
