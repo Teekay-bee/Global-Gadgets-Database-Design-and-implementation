@@ -83,17 +83,109 @@ The main entities include:
 --- 
 ### Normalization process
 
+To ensure efficient database design, **normalization rules** were applied up to the **Third Normal Form (3NF)**.
+
+## First Normal Form (1NF)
+All attributes are **atomic** (no repeating groups).  
+**Example:** Instead of storing a full name in one column, it was separated into `first_name` and `last_name` in the **Customers** table.
+
+## Second Normal Form (2NF)
+Eliminated **partial dependencies** by separating attributes that depend only on part of a composite key.  
+**Example:** Customer addresses were moved to a separate **CustomerAddress** table so that multiple addresses can be stored for one customer.
+
+## Third Normal Form (3NF)
+Removed **transitive dependencies** (non-key attributes depending on other non-key attributes).  
+**Example:** Product categories were separated into the **ProductCategory** table instead of storing category names in the **Products** table.
+
+### Illustration
+
+- **Unnormalized Table:**
+Products( product_Id,name, category_name, category_description,Price)
+
+- **Normalized Tables (3NF):**
+  - Products( product_Id,name, price and category_id)
+  - Products Category (Category_Id, Category _name,Category_description)
+
+This separation avoids **duplication of category details** for each product and ensures **data consistency** across the database.
+
 ---
 ### Constraints Implementation 
 
+Several **constraints** were applied during schema implementation to enforce business rules and maintain data integrity:
+
+- **Primary Keys (PK):** Ensure each record is uniquely identified.  
+  *Example:* `customer_id`, `order_id`.
+
+- **Foreign Keys (FK):** Maintain **referential integrity** between related tables.  
+  *Example:* `Orders → Customers`, `OrderDetails → Orders`.
+
+- **NOT NULL:** Ensure essential fields are always filled.  
+  *Example:* Customer names, order date.
+
+- **UNIQUE:** Prevent duplicate entries.  
+  *Example:* `email` in **Customers**, `category_name` in **ProductCategory**.
+
+- **DEFAULT:** Automatically populate fields with predefined values.  
+  *Example:* `created_at = GETDATE()`, `status = 'Pending'`.
+
+- **CHECK:** Enforce valid and logical values.  
+  *Example:* `product_price > 0`, `rating BETWEEN 1 AND 5`, `stock ≥ 0`.
 ---
 ### Schema Implementation 
 
 --- 
 ## Data Concurrency in database Systems
 
+**Concurrency control** is vital in environments where multiple users access and update shared data simultaneously.  
+Without proper controls, issues such as **lost updates**, **dirty reads**, **non-repeatable reads**, and **phantom reads** may arise  
+*(Silberschatz, Korth, & Sudarshan, 2020)*.
+
+In **Microsoft SQL Server**, concurrency is managed to ensure data consistency and integrity.  
+For example, if two users simultaneously attempt to update the stock levels of the same product, SQL Server ensures that **one transaction is completed before the other begins**, thereby avoiding conflicts.
+
+SQL Server addresses concurrency through:
+
+- **Transactions:**  
+  Grouping multiple operations ensures that related actions — such as order placement and inventory reduction — occur together, or not at all.  
+
+- **Locks and Isolation Levels:**  
+  Prevent conflicting updates by controlling access to data during transactions, ensuring that no two orders reduce the same product’s stock simultaneously.
+  
+ **Project Example**
+When a **customer places an order**, the system performs a series of operations within a single **transaction** to maintain data consistency:
+
+1. **Insert** a new record into the **Orders** table.  
+2. **Insert** corresponding **OrderDetails** records for each product purchased.  
+3. **Decrement** the product stock levels in the **Inventory** table.
+
+If any of these steps fail, the entire **transaction is rolled back**, preventing partial or inconsistent data updates.  
+This ensures that no order exists without its details and that stock quantities remain accurate.
+
 ---
 ### Data integrity in this Database System 
+**Data integrity** safeguards the **accuracy** and **consistency** of information throughout its lifecycle.  
+In the implemented e-commerce database system, several types of integrity were enforced:
+
+## 1. Entity Integrity  
+Each table was assigned a **Primary Key (PK)** to ensure records are **unique and identifiable**.  
+*Example:* `customer_id` uniquely identifies a customer in the **Customers** table.
+
+## 2. Referential Integrity  
+Maintained through **Foreign Keys (FK)** to ensure relationships between tables remain valid.  
+*Example:* Each `order_id` in **OrderDetails** must exist in the **Orders** table.
+
+## 3. Domain Integrity  
+Guaranteed through **CHECK constraints**, **data types**, and **default values**.  
+*Example:* Product prices must be **positive**, and stock levels **cannot be negative**.
+
+## 4. Business Rule Integrity  
+Implemented using **triggers** and **stored procedures** to enforce custom business logic.  
+Examples include:  
+- A **trigger** ensures that when an order is marked as *Cancelled*, the stock is automatically **replenished** in the inventory.  
+- Another **trigger** ensures that when an order is updated to *Delivered*, its status is **consistently reflected** across related tables.
+
+Such mechanisms prevent **invalid or inconsistent data** from entering the database, thereby preserving overall **data reliability and integrity**  
+*(Connolly & Begg, 2015)*.
 
 ---
 ### Transactions Management 
