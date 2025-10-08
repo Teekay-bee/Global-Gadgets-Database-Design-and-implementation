@@ -11,7 +11,7 @@ Traditional manual systems and unstructured data storage methods often lead to i
 To address these challenges, **Relational Database Management Systems (RDBMS)** are employed to store, organize, and manage business-critical information. This project focuses on the **design and implementation of a database system** for e-commerce operations. The system ensures **accurate record-keeping**, **enforces business rules**, and **facilitates smooth data flow** between different entities such as customers, orders, inventory, and suppliers.
 
 ---
-## problem Statement 
+## Problem Statement 
 
 E-commerce businesses often struggle with managing **customer records**, **tracking orders**, **updating delivery status**, **handling product inventory**, and **processing payments** efficiently. Without a well-structured database:
 
@@ -50,7 +50,7 @@ The scope includes:
 However, this project **does not include** the development of a full **e-commerce website** or **front-end application**. The focus remains on the **back-end database design and implementation**.
 
 ---
-## project Significance 
+## Project Significance 
 
 This project is significant in several ways:
 
