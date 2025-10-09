@@ -79,7 +79,7 @@ The main entities include:
 - **Refunds:** Records refund requests, processing, and approvals.
 ---
 ### ER Diagram 
-
+![image_preview](Erd.jpg)
 --- 
 ### Normalization process
 
